@@ -1,0 +1,77 @@
+#!/bin/sh
+
+# Subroutines for build_resflash.sh
+# Copyright Brian Conway <bconway@rcesoftware.com>, see LICENSE for details
+
+usage_and_exit() {
+  echo "Usage: ${0} [-p <packages folder>] [-s <com0 console speed>] <size in MiB> <OpenBSD base dir>"
+  exit 1
+}
+
+# Args: 1 - OpenBSD base dir
+# Assigns: fssizeinb, imgsizereqinb, rootsizeinb
+calc_fs_img_sizes() {
+  # Set filesystem size in bytes, leave 25% headroom
+  fssizeinb=$(($(du -ks ${1}|awk '{ print $1 }') / 3 * 4 * 1024))
+
+  # Set img size requirements in bytes: 4 MiB offset, 16 MiB /mbr, two /, 100 MiB /cfg, 10 MiB headroom
+  imgsizereqinb=$((20 * 1024 * 1024 + ${fssizeinb} * 2 + 110 * 1024 * 1024))
+
+  # Calculate / sizes based on available room in image, with 2 MiB headroom each
+  rootsizeinb=$(((${imgsizeinmb} - 4 - 16 - 100 - 4) * 1024 * 1024 / 2))
+}
+
+# Args: 1 - OpenBSD base dir
+# Assigns: MACHINE, ALG
+validate_base_dir() {
+  fail=0
+  echo "Validating OpenBSD base dir: ${1}..."
+
+  if [ ! -f ${1}/bsd ]; then
+    fail=1
+    echo "/bsd missing from ${1}, a kernel is required."
+  fi
+
+  # Inspect kernel arch to label and set checksum
+
+  case $(file ${basedir}/bsd|awk '{ print $3 }') in
+    64-bit) MACHINE=amd64
+            ALG=sha512;;
+    32-bit) MACHINE=i386
+            ALG=md5;;
+    *) MACHINE=unknown
+       ALG=sha256;;
+  esac
+
+  if [ -n "${pkgdir+1}" ] && [ ${MACHINE} != $(machine)  ]; then
+    fail=1
+    echo "Cross-arch builds do not support package installation at build time."
+  fi
+
+  if [ ! -f ${1}/dev/MAKEDEV ]; then
+    fail=1
+    echo "Missing some base files from ${1}, baseXY.tgz was not unpacked."
+  fi
+
+  if [ ! -f ${1}/usr/share/sysmerge/etcsum ]; then
+    fail=1
+    echo "Missing some /etc files, ${1}/usr/share/sysmerge/etc.tgz was not unpacked."
+  fi
+
+  if [ ! -O ${1}/usr/bin/su -o ! -u ${1}/usr/bin/su ]; then
+    fail=1
+    echo "Incorrect permissions found, baseXY.tgz must be unpacked as root using 'tar zxfph set.tgz'."
+  fi
+
+  # Check for enough space
+  calc_fs_img_sizes ${1}
+  if [ ${imgsizereqinb} -gt $((${imgsizeinmb} * 1024 * 1024)) ]; then
+    fail=1
+    echo "Disk image size is too small for the required filesystems, at least $((${imgsizereqinb} / 1024 / 1024)) MiB needed."
+  fi
+
+  if [ ${fail} -eq 1 ]; then
+    exit 1
+  fi
+}
+

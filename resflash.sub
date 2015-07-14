@@ -1,0 +1,55 @@
+#!/bin/sh
+
+# Subroutines for all resflash tools
+# Copyright Brian Conway <bconway@rcesoftware.com>, see LICENSE for details
+
+# Check whether -e is superfluous for handling escape characters
+if [ $(echo "\n" | wc -l) -eq 2 ]; then
+  ESCECHO=echo
+else
+  ESCECHO='echo -e'
+fi
+
+get_next_vnd() {
+  nextvnd=$(vnconfig -l|grep 'not in use'|head -n 1|awk -F : '{ print $1 }')
+}
+
+umount_all() {
+  sync
+
+  for cleanupmnt in $(mount|tail -r|grep resflash|awk '{ print $3 }'); do
+    umount ${cleanupmnt}
+  done
+
+  for cleanupvnd in $(vnconfig -l|grep resflash|awk -F : '{ print $1 }'); do
+    vnconfig -u ${cleanupvnd}
+  done
+}
+
+# Args: 1 - img or fs file
+# Assigns: MNTPATH
+mount_img_or_fs() {
+  MNTPATH=$(mktemp -t -d resflash.XXXXXX)
+  trap "umount_all; echo \*\*\* Mount error. MNTPATH: ${MNTPATH} \*\*\*; exit 1" ERR INT
+  mkdir -p ${MNTPATH}/fs
+
+  get_next_vnd
+  mntvnd=${nextvnd}
+  vnconfig ${mntvnd} ${1}
+
+  case $(echo ${1}|awk -F . '{ print $NF }') in
+    img) mkdir -p ${MNTPATH}/mbr ${MNTPATH}/cfg
+         mount -o async,noatime /dev/${mntvnd}a ${MNTPATH}/mbr
+         mount -o async,noatime /dev/${mntvnd}d ${MNTPATH}/fs
+         mount -o async,noatime /dev/${mntvnd}f ${MNTPATH}/cfg;;
+    fs) mount -o async,noatime /dev/${mntvnd}c ${MNTPATH}/fs;;
+    *) echo '*** ERROR: Not a resflash img or fs file. ***'
+       vnconfig -u ${mntvnd}
+       exit 1;;
+  esac
+
+  mount -t tmpfs -o noatime,nodev,nosuid,noexec tmpfs ${MNTPATH}/fs/tmp
+
+  ${ESCECHO} "Mounted:\n$(df -h|grep ${MNTPATH})"
+}
+

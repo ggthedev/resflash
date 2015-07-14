@@ -1,0 +1,40 @@
+#!/bin/sh
+
+# Save files on shutdown as directed in resflash.conf
+# Copyright Brian Conway <bconway@rcesoftware.com>, see LICENSE for details
+
+set -o errexit
+set -o nounset
+if [ "$(set -o|grep pipefail)" ]; then
+  set -o pipefail
+fi
+
+. /etc/resflash.conf
+
+if [ -n "${save_etc+1}" -o -n "${save_var+1}" ]; then
+  echo 'resflash: Saving files'
+
+  # /cfg may have been left mounted accidentally
+  if [ -z "$(mount|grep /cfg)" ]; then
+    mount /cfg
+  fi
+  trap 'sync; umount /cfg; exit 1' ERR INT
+
+  cp -p /etc/resflash.conf /cfg/etc
+
+  if [ -n "${save_etc+1}" ]; then
+    for saver in ${save_etc}; do
+      tar cf - -C /etc ${saver} | tar xpf - -C /cfg/etc
+    done
+  fi
+
+  if [ -n "${save_var+1}" ]; then
+    for saver in ${save_var}; do
+      tar cf - -C /var ${saver} | tar xpf - -C /cfg/var
+    done
+  fi
+
+  sync
+  umount /cfg
+fi
+

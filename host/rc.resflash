@@ -1,0 +1,41 @@
+#!/bin/sh
+
+# Early rc script to set up tmpfs filesystems
+# Copyright Brian Conway <bconway@rcesoftware.com>, see LICENSE for details
+
+set -o errexit
+set -o nounset
+if [ "$(set -o|grep pipefail)" ]; then
+  set -o pipefail
+fi
+
+# Directories to relocate and their tmpfs constraints
+RELOCDIRS='dev.4 etc.32 var.64'
+
+# Undo /etc/rc's 'mount -uw /'
+mount -ur /
+
+echo 'resflash: Relocating /dev /etc /var to tmpfs'
+
+for relocdir in ${RELOCDIRS}; do
+  dir=$(echo ${relocdir}|awk -F . '{ print $1 }')
+  tmpfssize=$(echo ${relocdir}|awk -F . '{ print $2 }')
+
+  tar cf /tmp/${dir}.tar -C /${dir} .
+  case ${dir} in
+    dev) mount -t tmpfs -o noatime,nosuid,noexec,-s${tmpfssize}M tmpfs /${dir};;
+    etc) mount -t tmpfs -o noatime,nodev,nosuid,-s${tmpfssize}M tmpfs /${dir};;
+    var) mount -t tmpfs -o noatime,nodev,nosuid,noexec,-s${tmpfssize}M tmpfs /${dir};;
+  esac
+  tar xpf /tmp/${dir}.tar -C /${dir}
+done
+
+rm /tmp/*.tar
+
+echo 'resflash: Overlaying data from /cfg'
+
+mount -o ro /cfg
+tar cf - -C /cfg/etc . | tar xpf - -C /etc
+tar cf - -C /cfg/var . | tar xpf - -C /var
+umount /cfg
+
