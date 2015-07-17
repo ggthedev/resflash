@@ -16,7 +16,7 @@ Resflash is a tool for building OpenBSD images for embedded and cloud environmen
 
 ## Features unique to resflash
 
-- A one-command build process, with no configuration file or sector calculation required.
+- A one-command build process, with no configuration file or sector calculations required.
 - An unmodified OpenBSD operating system - no custom kernels, no ramdisks.
 - Images can be built using only the OpenBSD distribution sets, no compiler or OpenBSD source is required.
 - Branch-agnostic: Build images using -current snapshots on -stable.
@@ -31,8 +31,8 @@ Resflash images contain two main data partitions, one active and one inactive. D
 
 ## Downloads
 
-- The latest stable source can be found in the [resflash master branch](https://github.com/bconway/resflash) on GitHub. Resflash always supports the two currently-supported releases of OpenBSD, starting with 5.7. A [zip download](https://github.com/bconway/resflash/archive/master.zip) is also available.
-- Premade -stable images are available at [http://stable.rcesoftware.com/pub/resflash](http://stable.rcesoftware.com/pub/resflash). Versions are available for amd64 and i386, each with VGA or com0 console. Both .img and .fs files, for installs and upgrades, are available.
+- The latest stable source can be found in the [resflash master branch](https://github.com/bconway/resflash) on GitHub. Resflash always supports the two currently-supported releases of OpenBSD, starting with 5.7. A [.zip download](https://github.com/bconway/resflash/archive/master.zip) is also available.
+- Premade -stable images are available at [http://stable.rcesoftware.com/pub/resflash](http://stable.rcesoftware.com/pub/resflash). Versions are available for amd64 and i386, each with VGA or com0 console. Both .img and .fs files, **for installs and upgrades**, are available.
 - Sets from the -stable branch are available at [http://stable.rcesoftware.com/pub/OpenBSD](http://stable.rcesoftware.com/pub/OpenBSD) for amd64 and i386. These are not (yet) built in an automated fashion, but should be updated shortly after an errata notice.
 
 ## Usage
@@ -120,9 +120,13 @@ This project would not be possible without the work of the fine folks at OpenBSD
 
 As resflash uses an unmodified OpenBSD operating system, there is no root password by default. Hit enter at the password prompt to log in as root. You will need to set a root password before logging in remotely via SSH.
 
+#### What is the difference between the .img and .fs files?
+
+The .img files are disk images, including MBR partition tables, that are used for initial installation to a flash drive. The .fs files are filesystems that are used for in-place upgrades by `/resflash/upgrade.sh`.
+
 #### How do I use the /cfg partition?
 
-The /cfg partition is unmounted in most situations. It is populated either manually or automatically on shutdown according to `/etc/resflash.conf`. To manually save a file, mount /cfg and then copy any file you want re-populated to /cfg/etc or /cfg/var, retaining the directory structure (i.e. `/cfg/etc/hostname.em0` or `/cfg/etc/ssh/sshd_config`). Make sure to unmount /cfg when you are finished!
+The /cfg partition is unmounted in most situations. It is populated either manually or automatically on shutdown according to `/etc/resflash.conf`. To manually save a file, mount /cfg and then copy any file you want re-populated to /cfg/etc or /cfg/var, retaining the directory structure (i.e. `/cfg/etc/hostname.em0` or `/cfg/etc/ssh/sshd_config`), followed by unmounting /cfg. You can also run `/resflash/resflash.save` manually to save configured files in advance of shutdown.
 
 #### What about LBA and CHS?
 

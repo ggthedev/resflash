@@ -33,7 +33,7 @@ chown -R root:wheel ${BUILDPATH}/fs/resflash
 echo ${VERSION} > ${BUILDPATH}/fs/resflash/.version
 cp etc/resflash.conf ${BUILDPATH}/fs/etc
 chown root:wheel ${BUILDPATH}/fs/etc/resflash.conf
-echo '/resflash/resflash.shutdown' >> ${BUILDPATH}/fs/etc/rc.shutdown
+echo '/resflash/resflash.save' >> ${BUILDPATH}/fs/etc/rc.shutdown
 
 sed -e '/rm.*fastboot/a\
 /resflash/rc.resflash\
