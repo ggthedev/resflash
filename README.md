@@ -8,7 +8,7 @@ Resflash is a tool for building OpenBSD images for embedded and cloud environmen
 
 - Read-only filesystems on all disk-backed partitions. Power can be safely lost at any time. 
 - An easy, one-step upgrade process.
-- Persistent configuration changes are enabled by a /cfg partition, populated either manually or automatically on shutdown.
+- Persistent configuration changes are enabled by a /cfg partition, stored either manually or automatically on shutdown, and re-populated on boot.
 - Full package support using the standard pkg_* tools or at build time.
 - Easy failover to the previous working image in the event of a boot failure (console access required).
 - System requirements comparable to that of OpenBSD (1 GB flash drive recommended).
@@ -46,7 +46,7 @@ Resflash images contain two main data partitions, one active and one inactive. D
   Sets **must** be unpacked as **root** using `tar zxfph set.tgz`.
 
 2. `./build_resflash.sh [-p <packages folder>] [-s <com0 console speed>] <size in MiB> <OpenBSD base dir>`
-3. Write the .img file (not the .fs file) to the drive of your choice: `dd if=resflash-amd64-com0-115200-20150613_1831.img of=/dev/rsd3c bs=1m`
+3. Write the .img file (not the .fs file) to the drive of your choice: `dd if=resflash-amd64-com0-115200-20150720_0257.img of=/dev/rsd3c bs=1m`
 
 Sample output:
 
@@ -54,8 +54,8 @@ Sample output:
 resflash 5.7.0
 
 Validating OpenBSD base dir: /usr/local/rdest...
-Building disk image: resflash-amd64-com0-115200-20150613_1611.img...
-Building filesystem image: resflash-amd64-com0-115200-20150613_1611.fs...
+Creating disk image: resflash-amd64-com0-115200-20150720_0257.img...
+Creating filesystem image: resflash-amd64-com0-115200-20150720_0257.fs...
 Populating filesystem and configuring fstab...
 Running fw_update...
 Installing packages...
@@ -63,11 +63,11 @@ Writing filesystem to image...
 Build complete!
 
 File sizes:
-378M    resflash-amd64-com0-115200-20150613_1611.fs
-1000M   resflash-amd64-com0-115200-20150613_1611.img
+326M    resflash-amd64-com0-115200-20150720_0257.fs
+953M    resflash-amd64-com0-115200-20150720_0257.img
 Disk usage:
-306M    resflash-amd64-com0-115200-20150613_1611.fs
-382M    resflash-amd64-com0-115200-20150613_1611.img
+249M    resflash-amd64-com0-115200-20150720_0257.fs
+330M    resflash-amd64-com0-115200-20150720_0257.img
 ```
 
 ## Upgrades
@@ -76,10 +76,10 @@ Unlike the initial installation, upgrades use .fs filesystem files. Upgrades tak
 
 - The less secure, trusted LAN-only way:
   1. On the system to be upgraded, run as **root**: `nc -l 1234 | /resflash/upgrade.sh`
-  2. On the build system, run: `nc -N 10.0.x.y 1234 < resflash-amd64-com0-115200-20150613_1831.fs`
+  2. On the build system, run: `nc -N 10.0.x.y 1234 < resflash-amd64-com0-115200-20150720_0257.fs`
   3. Review the output on the upgraded system and reboot.
 - The more secure, requiring root ssh login way:
-  1. On the build system, run: `ssh root@10.0.x.y /resflash/upgrade.sh < resflash-amd64-com0-115200-20150613_1635.fs`
+  1. On the build system, connect to the system to be upgraded: `ssh root@10.0.x.y /resflash/upgrade.sh < resflash-amd64-com0-115200-20150720_0257.fs`
   2. Review the output on the upgraded system and reboot.
 
 Sample output:
@@ -103,8 +103,8 @@ Upgrade complete!
 ## Host tools
 
 - `/etc/resflash.conf` - Optional configuration file for automating backup of files in /etc or /var on shutdown. Consult the file for available options.
-- `save_ssh_keys.sh` - Save SSH keys to /cfg.
-- `set_root_pass.sh` - Update root password and save necessary password db files to /cfg.
+- `/resflash/save_ssh_keys.sh` - Save SSH keys to /cfg.
+- `/resflash/set_root_pass.sh` - Update root password and save necessary password db files to /cfg.
  
 ## Problems?
 
@@ -126,7 +126,7 @@ The .img files are disk images, including MBR partition tables, that are used fo
 
 #### How do I use the /cfg partition?
 
-The /cfg partition is unmounted in most situations. It is populated either manually or automatically on shutdown according to `/etc/resflash.conf`. To manually save a file, mount /cfg and then copy any file you want re-populated to /cfg/etc or /cfg/var, retaining the directory structure (i.e. `/cfg/etc/hostname.em0` or `/cfg/etc/ssh/sshd_config`), followed by unmounting /cfg. You can also run `/resflash/resflash.save` manually to save configured files in advance of shutdown.
+The /cfg partition is unmounted in most situations. Files are saved either manually or automatically on shutdown according to `/etc/resflash.conf`. To manually store a file, mount /cfg and then copy any file you want re-populated on boot to /cfg/etc or /cfg/var, retaining the directory structure (i.e. `/cfg/etc/hostname.em0` or `/cfg/etc/ssh/sshd_config`), followed by unmounting /cfg. You can also run `/resflash/resflash.save` manually to save configured files in advance of shutdown.
 
 #### What about LBA and CHS?
 

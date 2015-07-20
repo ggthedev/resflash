@@ -9,7 +9,7 @@ else
   COM0=''
 fi
 IMAGE=resflash-${MACHINE}-${COM0}${DATE}.img
-echo "Building disk image: ${IMAGE}..."
+echo "Creating disk image: ${IMAGE}..."
 
 # Build the image shell
 

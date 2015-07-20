@@ -4,7 +4,7 @@
 # Copyright Brian Conway <bconway@rcesoftware.com>, see LICENSE for details
 
 FS=resflash-${MACHINE}-${COM0}${DATE}.fs
-echo "Building filesystem image: ${FS}..."
+echo "Creating filesystem image: ${FS}..."
 
 # Build the fs shell
 
