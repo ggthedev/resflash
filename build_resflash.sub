@@ -4,7 +4,7 @@
 # Copyright Brian Conway <bconway@rcesoftware.com>, see LICENSE for details
 
 usage_and_exit() {
-  echo "Usage: ${0} [-p <packages folder>] [-s <com0 console speed>] <size in MiB> <OpenBSD base dir>"
+  echo "Usage: ${0} [-p packages_dir] [-s com0_console_speed] img_size_in_mb openbsd_base_dir"
   exit 1
 }
 

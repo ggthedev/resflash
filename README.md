@@ -45,7 +45,7 @@ Resflash images contain two main data partitions, one active and one inactive. D
 
   Sets **must** be unpacked as **root** using `tar zxfph set.tgz`.
 
-2. `./build_resflash.sh [-p <packages folder>] [-s <com0 console speed>] <size in MiB> <OpenBSD base dir>`
+2. `./build_resflash.sh [-p packages_dir] [-s com0_console_speed] img_size_in_mb openbsd_base_dir`
 3. Write the .img file (not the .fs file) to the drive of your choice: `dd if=resflash-amd64-com0-115200-20150720_0257.img of=/dev/rsd3c bs=1m`
 
 Sample output:

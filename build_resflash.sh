@@ -22,6 +22,7 @@ while :; do
   fi
 
   case ${1} in
+    -n) skipfw=1; shift;;
     -p) pkgdir=${2}; shift 2;;
     -s) com0sp=${2}; shift 2;;
     -*) usage_and_exit;;
