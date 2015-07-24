@@ -81,8 +81,8 @@ sync
 umount ${BUILDPATH}/fs
 vnconfig -u ${fsvnd}
 
-# Write filesystem to image's d partition and compute checksum
+# Write filesystem to image's d partition and calculate checksum
 
-echo 'Writing filesystem to image...'
-( dd if=${FS} bs=1m status=none|tee /dev/fd/3|dd of=/dev/r${imgvnd}d bs=16k >> ${BUILDPATH}/07.mkfs.dd 2>&1; ) 3>&1|${ALG} >> ${FS}.${ALG}
+echo 'Writing filesystem to image and calculating checksum...'
+(dd if=${FS} bs=1m status=none|tee /dev/fd/3|dd of=/dev/r${imgvnd}d bs=16k >> ${BUILDPATH}/07.mkfs.dd 2>&1;) 3>&1|${ALG} > ${FS}.${ALG}
 

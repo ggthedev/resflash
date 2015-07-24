@@ -2,7 +2,7 @@
 
 #### Resilient OpenBSD images for flash memory
 
-Resflash is a tool for building OpenBSD images for embedded and cloud environments in a programmatic, reproducible way. Resflash images can be written to any bootable flash media, such as USB drives, SD cards, or Compact Flash, or even conventional hard drives or SSDs. Resflash exclusively uses read-only and memory-backed filesystems, and because the partitions are written to only during system upgrades (or as otherwise configured), filesystems are not subject to corruption due to power loss - and even cheap flash drives can last virtually forever. Resflash was written from scratch, with inspiration drawn from [NanoBSD](https://www.freebsd.org/doc/en_US.ISO8859-1/articles/nanobsd/) and [flashrd](http://www.nmedia.net/flashrd/).
+Resflash is a tool for building OpenBSD images for embedded and cloud systems in a reproducible way. Resflash exclusively uses read-only and memory-backed filesystems, and because the partitions are only written to during system upgrades (or as otherwise configured), filesystems are not subject to corruption or fsck due to power loss - and even cheap flash drives can last virtually forever. Resflash images can be written to any bootable flash media, such as USB drives, SD cards, or Compact Flash, or even conventional hard drives or SSDs. Resflash was written from scratch, with inspiration drawn from [NanoBSD](https://www.freebsd.org/doc/en_US.ISO8859-1/articles/nanobsd/) and [flashrd](http://www.nmedia.net/flashrd/).
 
 ## Features
 
@@ -28,6 +28,10 @@ Resflash is a tool for building OpenBSD images for embedded and cloud environmen
 ## How does it work?
 
 Resflash images contain two main data partitions, one active and one inactive. During the upgrade process, the inactive partition is updated, tested, and set active for the next boot. A /cfg partition can be used to store modifications from the tmpfs filesystems (/etc and /var) and are overlaid at boot time. A small /mbr partition is used to maintain the boot code.
+
+## Coverage
+
+- [BSD Now - Episode 099: BSD Gnow](http://www.bsdnow.tv/episodes/2015_07_22-bsd_gnow)
 
 ## Downloads
 
@@ -59,7 +63,7 @@ Creating filesystem image: resflash-amd64-com0-115200-20150720_0257.fs...
 Populating filesystem and configuring fstab...
 Running fw_update...
 Installing packages...
-Writing filesystem to image...
+Writing filesystem to image and calculating checksum...
 Build complete!
 
 File sizes:

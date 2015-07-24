@@ -30,7 +30,7 @@ umount_all() {
 # Assigns: MNTPATH
 mount_img_or_fs() {
   MNTPATH=$(mktemp -t -d resflash.XXXXXX)
-  trap "umount_all; echo \*\*\* Mount error. MNTPATH: ${MNTPATH} \*\*\*; exit 1" ERR INT
+  trap "umount_all; echo \*\*\* Error encountered. MNTPATH: ${MNTPATH} \*\*\*; exit 1" ERR INT
   mkdir -p ${MNTPATH}/fs
 
   get_next_vnd
