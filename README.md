@@ -8,7 +8,7 @@ Resflash is a tool for building OpenBSD images for embedded and cloud systems in
 
 - Read-only filesystems on all disk-backed partitions. Power can be safely lost at any time. 
 - An easy, one-step upgrade process.
-- Persistent configuration changes are enabled by a /cfg partition, stored either manually or automatically on shutdown, and re-populated on boot.
+- Persistent configuration changes are possible by a /cfg partition, stored either manually or automatically on shutdown, and re-populated on boot.
 - Full package support using the standard pkg_* tools or at build time.
 - Easy failover to the previous working image in the event of a boot failure (console access required).
 - System requirements comparable to that of OpenBSD (1 GB flash drive recommended).
@@ -22,7 +22,7 @@ Resflash is a tool for building OpenBSD images for embedded and cloud systems in
 - Branch-agnostic: Build images using -current snapshots on -stable.
 - Arch-agnostic: Build i386 images on amd64, or vice-versa. *Note: Cross-arch builds do not support package installation at build time.*
 - System upgrades update the [MBR](http://www.openbsd.org/cgi-bin/man.cgi/OpenBSD-current/man8/fdisk.8), [biosboot(8)](http://www.openbsd.org/cgi-bin/man.cgi/OpenBSD-current/man8/amd64/biosboot.8), and [boot(8)](http://www.openbsd.org/cgi-bin/man.cgi/OpenBSD-current/man8/amd64/boot.8).
-- Modified files in /etc or /var can be saved manually or automatically on shutdown - either en masse or by pattern (i.e. `.`, `/etc/ssh`, `/var/db/dhcpd.leases`)
+- Modified files in /etc or /var can be saved manually or automatically on shutdown - either en masse or by directory or file (i.e. `.`, `/etc/ssh`, `/var/db/dhcpd.leases`)
 - Builds with ksh or Bash (but why?).
 
 ## How does it work?
@@ -134,7 +134,7 @@ The /cfg partition is unmounted in most situations. Files are saved either manua
 
 #### What about LBA and CHS?
 
-Resflash requires an LBA-aware BIOS. CHS numbers have been bogus for ~~years~~ decades and aren't supported. **Make sure to set your Alix board to LBA mode.**
+Resflash requires an LBA-aware BIOS. CHS numbers have been bogus for [20 years](https://en.wikipedia.org/wiki/Logical_block_addressing), and I don't have the hardware for - or much interest in - supporting them. **Make sure to set your Alix board to LBA mode.** If you have a use case for a CHS-only device that needs supporting, I'd be interesting in [hearing](mailto:bconway-at-rcesoftware-dot-com) about it.
 
 #### Help! I ran the upgrade and now it won't boot. How do I failover to the previous version?
 
