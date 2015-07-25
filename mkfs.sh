@@ -37,6 +37,8 @@ echo '/resflash/resflash.save' >> ${BUILDPATH}/fs/etc/rc.shutdown
 
 sed -e '/rm.*fastboot/a\
 /resflash/rc.resflash\
+# Re-read rc.conf and rc.conf.local from the new /etc\
+_rc_parse_conf\
 ' ${BUILDPATH}/fs/etc/rc > ${BUILDPATH}/rc.new
 cp ${BUILDPATH}/rc.new ${BUILDPATH}/fs/etc/rc
 

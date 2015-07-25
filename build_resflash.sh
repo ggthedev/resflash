@@ -12,7 +12,7 @@ fi
 . ./resflash.sub
 . ./build_resflash.sub
 
-VERSION=5.7.0
+VERSION=5.7.1
 BYTESECT=512
 
 # Parse options first
