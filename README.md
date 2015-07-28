@@ -55,7 +55,7 @@ Resflash images contain two main data partitions, one active and one inactive. D
 Sample output:
 
 ```
-resflash 5.7.0
+resflash 5.7.1
 
 Validating OpenBSD base dir: /usr/local/rdest...
 Creating disk image: resflash-amd64-com0-115200-20150720_0257.img...

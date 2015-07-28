@@ -1,6 +1,6 @@
 #!/bin/sh
 
-# Save SSH keys to /cfg
+# Save SSH and IKE keys to /cfg
 # Copyright Brian Conway <bconway@rcesoftware.com>, see LICENSE for details
 
 set -o errexit
@@ -9,7 +9,7 @@ if [ "$(set -o|grep pipefail)" ]; then
   set -o pipefail
 fi
 
-echo 'Saving SSH keys...'
+echo 'Saving SSH and IKE keys...'
 
 # /cfg may have been left mounted accidentally
 if [ -z "$(mount|grep /cfg)" ]; then
@@ -21,6 +21,8 @@ trap 'sync; umount /cfg; exit 1' ERR INT
 cwd=$(pwd)
 cd /etc
 tar cf - ssh/ssh_host_*key* | tar xvpf - -C /cfg/etc
+tar cf - {isakmpd,iked}/local.pub | tar xvpf - -C /cfg/etc
+tar cf - {isakmpd,iked}/private/local.key | tar xvpf - -C /cfg/etc
 cd ${cwd}
 
 sync
