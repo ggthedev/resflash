@@ -52,16 +52,20 @@ cd ${cwd}
 # Configure fstab
 
 duid=$(disklabel ${imgvnd}|grep duid|awk '{ print $2 }')
-echo "${duid}.a /mbr ffs rw,noatime,nodev,nosuid,noexec,noauto 1 2" > ${BUILDPATH}/fs/etc/fstab
+echo "${duid}.a /mbr ffs rw,noatime,nodev,nosuid,noexec,noauto 1 2" > \
+${BUILDPATH}/fs/etc/fstab
 echo "${duid}.d / ffs ro,noatime,nodev 1 1" >> ${BUILDPATH}/fs/etc/fstab
-echo "${duid}.f /cfg ffs rw,noatime,nodev,nosuid,noexec,noauto 1 2" >> ${BUILDPATH}/fs/etc/fstab
-echo 'tmpfs /tmp tmpfs rw,noatime,nodev,nosuid,noexec,-s64M 0 0' >> ${BUILDPATH}/fs/etc/fstab
+echo "${duid}.f /cfg ffs rw,noatime,nodev,nosuid,noexec,noauto 1 2" >> \
+${BUILDPATH}/fs/etc/fstab
+echo 'tmpfs /tmp tmpfs rw,noatime,nodev,nosuid,noexec,-s64M 0 0' >> \
+${BUILDPATH}/fs/etc/fstab
 
 # Install random.seed and host.random
 
 dd if=/dev/random of=${BUILDPATH}/fs/etc/random.seed bs=512 count=1 status=none
 chmod 600 ${BUILDPATH}/fs/etc/random.seed
-dd if=/dev/random of=${BUILDPATH}/fs/var/db/host.random bs=65536 count=1 status=none
+dd if=/dev/random of=${BUILDPATH}/fs/var/db/host.random bs=65536 count=1 \
+status=none
 chmod 600 ${BUILDPATH}/fs/var/db/host.random
 
 # Set com0 ttys, if directed
@@ -69,7 +73,8 @@ chmod 600 ${BUILDPATH}/fs/var/db/host.random
 if [ -n "${com0sp+1}" ]; then
   sed -e '/^ttyC/s/on.*secure/off\ secure/' \
       -e "/^tty00/s/std\.9600/std\.${com0sp}/" \
-      -e '/^tty00/s/unknown.*/vt220\ on\ secure/' ${BUILDPATH}/fs/etc/ttys > ${BUILDPATH}/ttys.new
+      -e '/^tty00/s/unknown.*/vt220\ on\ secure/' \
+      ${BUILDPATH}/fs/etc/ttys > ${BUILDPATH}/ttys.new
   cp ${BUILDPATH}/ttys.new ${BUILDPATH}/fs/etc/ttys
 fi
 
@@ -86,5 +91,6 @@ vnconfig -u ${fsvnd}
 # Write filesystem to image's d partition and calculate checksum
 
 echo 'Writing filesystem to image and calculating checksum...'
-(dd if=${FS} bs=1m status=none|tee /dev/fd/3|dd of=/dev/r${imgvnd}d bs=16k >> ${BUILDPATH}/07.mkfs.dd 2>&1;) 3>&1|${ALG} > ${FS}.${ALG}
+(dd if=${FS} bs=1m status=none|tee /dev/fd/3|dd of=/dev/r${imgvnd}d bs=16k >> \
+${BUILDPATH}/07.mkfs.dd 2>&1;) 3>&1|${ALG} > ${FS}.${ALG}
 

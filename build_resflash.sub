@@ -4,17 +4,19 @@
 # Copyright Brian Conway <bconway@rcesoftware.com>, see LICENSE for details
 
 usage_and_exit() {
-  echo "Usage: ${0} [-p packages_dir] [-s com0_console_speed] img_size_in_mb openbsd_base_dir"
+  echo "Usage: ${0} [-p packages_dir] [-s com0_console_speed] img_size_in_mb" \
+       "openbsd_base_dir"
   exit 1
 }
 
 # Args: 1 - OpenBSD base dir
 # Assigns: fssizeinb, imgsizereqinb, rootsizeinb
 calc_fs_img_sizes() {
-  # Set filesystem size in bytes, leave 25% pkg headroom and assume 16MiB for fw_update
+  # Set filesystem size in bytes, leave 25% pkg and 16MiB fw_update headroom
   fssizeinb=$((($(du -ks ${1}|awk '{ print $1 }') + 16384) / 3 * 4 * 1024))
 
-  # Set img size requirements in bytes: 4 MiB offset, 16 MiB /mbr, two /, 100 MiB /cfg, 10 MiB headroom
+  # Set img size requirements in bytes: 4 MiB offset, 16 MiB /mbr, two /,
+  # 100 MiB /cfg, 10 MiB headroom
   imgsizereqinb=$((20 * 1024 * 1024 + ${fssizeinb} * 2 + 110 * 1024 * 1024))
 
   # Calculate / sizes based on available room in image, with 2 MiB headroom each
@@ -55,19 +57,22 @@ validate_base_dir() {
 
   if [ ! -f ${1}/usr/share/sysmerge/etcsum ]; then
     fail=1
-    echo "Missing some /etc files, ${1}/usr/share/sysmerge/etc.tgz was not unpacked."
+    echo "Missing some /etc files, ${1}/usr/share/sysmerge/etc.tgz was not" \
+         "unpacked."
   fi
 
   if [ ! -O ${1}/usr/bin/su -o ! -u ${1}/usr/bin/su ]; then
     fail=1
-    echo "Incorrect permissions found, baseXY.tgz must be unpacked as root using 'tar zxfph set.tgz'."
+    echo "Incorrect permissions found, baseXY.tgz must be unpacked as root" \
+         "using 'tar zxfph set.tgz'."
   fi
 
   # Check for enough space
   calc_fs_img_sizes ${1}
   if [ ${imgsizereqinb} -gt $((${imgsizeinmb} * 1024 * 1024)) ]; then
     fail=1
-    echo "Disk image size is too small for the required filesystems, at least $((${imgsizereqinb} / 1024 / 1024)) MiB needed."
+    echo "Disk image size is too small for the required filesystems, at least" \
+         "$((${imgsizereqinb} / 1024 / 1024)) MiB needed."
   fi
 
   if [ ${fail} -eq 1 ]; then

@@ -90,9 +90,11 @@ Sample output:
 
 ```
 Writing filesystem to inactive partition...
-942a56a94525c532a7b5575b0ccda81bd9910e22601170bf83a03a6f2425030c7577a5020a11cba69c5c5e8f5f093f8c7b1c0f426c04d1fbd2f0767772e74f1c
+942a56a94525c532a7b5575b0ccda81bd9910e22601170bf83a03a6f2425030c7577a5020a11cba6
+9c5c5e8f5f093f8c7b1c0f426c04d1fbd2f0767772e74f1c
 Checking filesystem...
-/dev/rwd0d: 12268 files, 152563 used, 37038 free (238 frags, 4600 blocks, 0.1% fragmentation)
+/dev/rwd0d: 12268 files, 152563 used, 37038 free (238 frags, 4600 blocks, 0.1% f
+ragmentation)
 Updating fstab...
 Updating MBR, biosboot(8), and boot(8)...
 Everything looks good, setting the new partition active...
@@ -107,7 +109,7 @@ Upgrade complete!
 ## Host tools
 
 - `/etc/resflash.conf` - Optional configuration file for automating backup of files in /etc or /var on shutdown. Consult the file for available options.
-- `/resflash/save_ssh_keys.sh` - Save SSH keys to /cfg.
+- `/resflash/save_ssh_ike_keys.sh` - Save SSH and IKE keys to /cfg.
 - `/resflash/set_root_pass.sh` - Update root password and save necessary password db files to /cfg.
  
 ## Problems?

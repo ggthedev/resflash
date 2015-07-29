@@ -57,7 +57,8 @@ validate_base_dir ${basedir}
 BUILDPATH=$(mktemp -t -d resflash.XXXXXX)
 DATE=$(date +%Y%m%d_%H%M)
 
-trap "umount_all; echo \*\*\* Error encountered, retaining logs. BUILDPATH: ${BUILDPATH} \*\*\*; exit 1" ERR INT
+trap "umount_all; echo \*\*\* Error encountered, retaining logs. BUILDPATH: \
+${BUILDPATH} \*\*\*; exit 1" ERR INT
 
 # Build disk image and populate boot data
 . ./mkimg.sh
@@ -69,5 +70,7 @@ trap "umount_all; echo \*\*\* Error encountered, retaining logs. BUILDPATH: ${BU
 umount_all
 rm -r ${BUILDPATH}
 
-${ESCECHO} "Build complete!\n\nFile sizes:\n$(ls -lh resflash-*-${DATE}.{fs,img}|awk '{ print $5"\t"$9 }')\nDisk usage:\n$(du -h resflash-*-${DATE}.{fs,img})"
+${ESCECHO} 'Build complete!\n\nFile sizes:'
+echo "$(ls -lh resflash-*-${DATE}.{fs,img}|awk '{ print $5"\t"$9 }')"
+${ESCECHO} "Disk usage:\n$(du -h resflash-*-${DATE}.{fs,img})"
 

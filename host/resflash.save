@@ -18,7 +18,7 @@ if [ -n "${save_etc+1}" -o -n "${save_var+1}" ]; then
   if [ -z "$(mount|grep /cfg)" ]; then
     mount /cfg
   fi
-  trap 'sync; umount /cfg; exit 1' ERR INT
+  trap 'sync; umount /cfg; sync; exit 1' ERR INT
 
   cp -p /etc/resflash.conf /cfg/etc
 
@@ -36,5 +36,6 @@ if [ -n "${save_etc+1}" -o -n "${save_var+1}" ]; then
 
   sync
   umount /cfg
+  sync
 fi
 

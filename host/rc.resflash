@@ -25,7 +25,8 @@ for relocdir in ${RELOCDIRS}; do
   case ${dir} in
     dev) mount -t tmpfs -o noatime,nosuid,noexec,-s${tmpfssize}M tmpfs /${dir};;
     etc) mount -t tmpfs -o noatime,nodev,nosuid,-s${tmpfssize}M tmpfs /${dir};;
-    var) mount -t tmpfs -o noatime,nodev,nosuid,noexec,-s${tmpfssize}M tmpfs /${dir};;
+    var) mount -t tmpfs -o noatime,nodev,nosuid,noexec,-s${tmpfssize}M tmpfs \
+         /${dir};;
   esac
   tar xpf /tmp/${dir}.tar -C /${dir}
 done

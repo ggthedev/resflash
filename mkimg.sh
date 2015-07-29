@@ -13,7 +13,8 @@ echo "Creating disk image: ${IMAGE}..."
 
 # Build the image shell
 
-dd if=/dev/zero of=${IMAGE} bs=1m count=1 seek=$((${imgsizeinmb} - 1)) status=none
+dd if=/dev/zero of=${IMAGE} bs=1m count=1 seek=$((${imgsizeinmb} - 1)) \
+status=none
 
 # Fdisk the image
 
@@ -21,7 +22,8 @@ get_next_vnd
 imgvnd=${nextvnd}
 vnconfig ${imgvnd} ${IMAGE}
 # CHS is bogus, we're not going to deal with it and require an LBA-aware BIOS
-fdisk -iy -f ${basedir}/usr/mdec/mbr ${imgvnd} >> ${BUILDPATH}/00.mkimg.fdisk 2>&1
+fdisk -iy -f ${basedir}/usr/mdec/mbr ${imgvnd} >> ${BUILDPATH}/00.mkimg.fdisk \
+2>&1
 fdisk ${imgvnd} >> ${BUILDPATH}/00.mkimg.fdisk 2>&1
 
 # Build the disklabel: 16 MiB /mbr, two / + 2 MiB headroom, 100 MiB /cfg
@@ -46,7 +48,8 @@ mkdir -p ${BUILDPATH}/cfg/etc ${BUILDPATH}/cfg/var
 
 # Install biosboot(8), boot(8), and boot.conf
 
-installboot -r ${BUILDPATH}/mbr ${imgvnd} ${basedir}/usr/mdec/biosboot ${basedir}/usr/mdec/boot >> ${BUILDPATH}/03.mkimg.installboot 2>&1
+installboot -r ${BUILDPATH}/mbr ${imgvnd} ${basedir}/usr/mdec/biosboot \
+${basedir}/usr/mdec/boot >> ${BUILDPATH}/03.mkimg.installboot 2>&1
 echo 'set device hd0d' > ${BUILDPATH}/mbr/etc/boot.conf
 
 # Set com0 console, if directed
