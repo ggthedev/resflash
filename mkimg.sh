@@ -43,8 +43,7 @@ newfs ${imgvnd}a >> ${BUILDPATH}/02.mkimg.newfs 2>&1
 newfs ${imgvnd}f >> ${BUILDPATH}/02.mkimg.newfs 2>&1
 mount -o async,noatime /dev/${imgvnd}a ${BUILDPATH}/mbr
 mount -o async,noatime /dev/${imgvnd}f ${BUILDPATH}/cfg
-mkdir -p ${BUILDPATH}/mbr/etc
-mkdir -p ${BUILDPATH}/cfg/etc ${BUILDPATH}/cfg/var
+mkdir -p ${BUILDPATH}/mbr/etc ${BUILDPATH}/cfg/etc ${BUILDPATH}/cfg/var
 
 # Install biosboot(8), boot(8), and boot.conf
 

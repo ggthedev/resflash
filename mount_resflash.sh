@@ -12,7 +12,7 @@ fi
 . ./resflash.sub
 
 if [ ${#} -ne 1 ]; then
-  echo "Usage: ${0} <resflash img or fs>"
+  echo "Usage: ${0} resflash_img_or_fs"
   exit 1
 fi
 

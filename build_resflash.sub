@@ -12,8 +12,8 @@ usage_and_exit() {
 # Args: 1 - OpenBSD base dir
 # Assigns: fssizeinb, imgsizereqinb, rootsizeinb
 calc_fs_img_sizes() {
-  # Set filesystem size in bytes, leave 25% pkg and 16MiB fw_update headroom
-  fssizeinb=$((($(du -ks ${1}|awk '{ print $1 }') + 16384) / 3 * 4 * 1024))
+  # Set filesystem size in bytes, leave 25% pkg and 14MiB fw_update headroom
+  fssizeinb=$((($(du -ks ${1}|awk '{ print $1 }') + 14336) / 3 * 4 * 1024))
 
   # Set img size requirements in bytes: 4 MiB offset, 16 MiB /mbr, two /,
   # 100 MiB /cfg, 10 MiB headroom

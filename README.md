@@ -55,11 +55,11 @@ Resflash images contain two main data partitions, one active and one inactive. D
 Sample output:
 
 ```
-resflash 5.7.1
+resflash 5.8.0
 
 Validating OpenBSD base dir: /usr/local/rdest...
-Creating disk image: resflash-amd64-com0-115200-20150720_0257.img...
-Creating filesystem image: resflash-amd64-com0-115200-20150720_0257.fs...
+Creating disk image: resflash-amd64-com0-115200-20150810_0231.img...
+Creating filesystem image: resflash-amd64-com0-115200-20150810_0231.fs...
 Populating filesystem and configuring fstab...
 Running fw_update...
 Installing packages...
@@ -67,11 +67,11 @@ Writing filesystem to image and calculating checksum...
 Build complete!
 
 File sizes:
-326M    resflash-amd64-com0-115200-20150720_0257.fs
-953M    resflash-amd64-com0-115200-20150720_0257.img
+306M    resflash-amd64-com0-115200-20150810_0231.fs
+953M    resflash-amd64-com0-115200-20150810_0231.img
 Disk usage:
-249M    resflash-amd64-com0-115200-20150720_0257.fs
-330M    resflash-amd64-com0-115200-20150720_0257.img
+237M    resflash-amd64-com0-115200-20150810_0231.fs
+310M    resflash-amd64-com0-115200-20150810_0231.img
 ```
 
 ## Upgrades
@@ -81,10 +81,10 @@ Unlike the initial installation, upgrades use .fs filesystem files. Upgrades tak
 - The less secure, trusted LAN-only way:
   1. On the system to be upgraded, run as **root**: `nc -l 1234 | /resflash/upgrade.sh`
   2. On the build system, run: `nc -N 10.0.x.y 1234 < resflash-amd64-com0-115200-20150720_0257.fs`
-  3. Review the output on the upgraded system and reboot.
+  3. Review the output, confirm the filesystem checksum, and reboot.
 - The more secure, requiring root ssh login way:
-  1. On the build system, connect to the system to be upgraded: `ssh root@10.0.x.y /resflash/upgrade.sh < resflash-amd64-com0-115200-20150720_0257.fs`
-  2. Review the output on the upgraded system and reboot.
+  1. On the build system, connect to the system to be upgraded: `ssh -C root@10.0.x.y /resflash/upgrade.sh < resflash-amd64-com0-115200-20150720_0257.fs`
+  2. Review the output, confirm the filesystem checksum, and reboot.
 
 Sample output:
 

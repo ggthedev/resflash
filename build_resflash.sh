@@ -12,10 +12,11 @@ fi
 . ./resflash.sub
 . ./build_resflash.sub
 
-VERSION=5.7.1
+VERSION=5.8.0
 BYTESECT=512
 
 # Parse options first
+skipfw=0
 while :; do
   if [ ${#} -eq 0 ]; then
     usage_and_exit

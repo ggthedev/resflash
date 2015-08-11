@@ -9,7 +9,7 @@ mount -t tmpfs -o noatime,nodev,nosuid,noexec tmpfs ${BUILDPATH}/fs/tmp
 
 # Run fw_update, set up a temporary resolv.conf if necessary
 
-if [ -z "${skipfw+1}" ]; then
+if [ ${skipfw} -eq 0 ]; then
   echo 'Running fw_update...'
   ${ESCECHO} 'nameserver 8.8.8.8\nlookup file bind' > \
   ${BUILDPATH}/fs/etc/resolv.conf

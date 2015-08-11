@@ -1,0 +1,6 @@
+This file is used to track planned changes which can't be made yet due to
+supporting two releases.
+
+5.9.0:
+- Update sed to sed -i.
+
